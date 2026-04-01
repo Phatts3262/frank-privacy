@@ -13,18 +13,58 @@
   <meta property="og:url" content="https://phatts3262.github.io/frank-privacy/">
   <meta property="og:type" content="website">
 
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
   <style>
+    /* ── Design Tokens ─────────────────────────────── */
     :root {
-      --bg: #0B0B0B;
-      --surface: #1C1C1E;
-      --surface-hover: #2C2C2E;
+      --bg: #0E0E0E;
+      --bg-warm: #121110;
+      --surface: #1A1918;
+      --surface-elevated: #242220;
       --primary: #9AC494;
+      --primary-dim: rgba(154, 196, 148, 0.12);
+      --primary-glow: rgba(154, 196, 148, 0.06);
       --secondary: #8DB4D4;
-      --text: #E5E7EB;
-      --muted: #9B958B;
+      --text: #E8E4DF;
+      --text-secondary: #B5AFA7;
+      --muted: #7A756E;
+      --border: rgba(155, 149, 139, 0.08);
+      --border-hover: rgba(154, 196, 148, 0.2);
+
+      --font-heading: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      --text-xs: 0.8rem;
+      --text-sm: 0.9rem;
+      --text-base: 1rem;
+      --text-lg: 1.15rem;
+      --text-xl: 1.35rem;
+      --text-2xl: 1.75rem;
+      --text-3xl: 2.25rem;
+      --text-4xl: 3.25rem;
+      --text-5xl: 4.5rem;
+
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2.5rem;
+      --space-xl: 4rem;
+      --space-2xl: 6rem;
+      --space-3xl: 8rem;
+
+      --max-width: 1120px;
+      --max-width-narrow: 680px;
+
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --duration: 0.6s;
     }
 
-    * {
+    /* ── Reset & Base ──────────────────────────────── */
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -32,516 +72,1015 @@
 
     html {
       scroll-behavior: smooth;
+      scroll-padding-top: 72px;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: var(--font-body);
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.022;
+      filter: url(#grain);
+      width: 100%;
+      height: 100%;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
     /* ── Layout ─────────────────────────────────────── */
-
     .container {
-      max-width: 1080px;
+      max-width: var(--max-width);
       margin: 0 auto;
-      padding: 0 1.5rem;
+      padding: 0 var(--space-md);
     }
 
-    section {
-      padding: 5rem 0;
+    /* ── Scroll Animations ─────────────────────────── */
+    [data-animate] {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity var(--duration) var(--ease-out),
+                  transform var(--duration) var(--ease-out);
+    }
+
+    [data-animate].is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    [data-animate-delay="1"] { transition-delay: 0.1s; }
+    [data-animate-delay="2"] { transition-delay: 0.2s; }
+    [data-animate-delay="3"] { transition-delay: 0.3s; }
+    [data-animate-delay="4"] { transition-delay: 0.4s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-animate] {
+        transform: none;
+        transition: opacity 0.3s ease;
+      }
+      .hero-image-float {
+        animation: none !important;
+      }
+    }
+
+    /* ── Navigation ────────────────────────────────── */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 0 var(--space-md);
+      transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    .site-header.scrolled {
+      background: rgba(14, 14, 14, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom-color: var(--border);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .logo-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: var(--text-xl);
+      color: var(--text);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+
+    .nav-links a {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.04em;
+      transition: color 0.3s var(--ease-out);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-cta {
+      font-size: var(--text-sm) !important;
+      font-weight: 500 !important;
+      color: var(--primary) !important;
+      background: var(--primary-dim);
+      padding: 0.45rem 1.1rem;
+      border-radius: 100px;
+      transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out) !important;
+    }
+
+    .nav-cta:hover {
+      background: rgba(154, 196, 148, 0.2) !important;
     }
 
     /* ── Hero ───────────────────────────────────────── */
-
     .hero {
-      min-height: 90vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 6rem 0 4rem;
-      position: relative;
-      overflow: hidden;
+      padding: calc(64px + var(--space-xl)) 0 var(--space-2xl);
     }
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -120px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(154, 196, 148, 0.08) 0%, transparent 70%);
-      pointer-events: none;
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 0.65fr;
+      align-items: center;
+      gap: var(--space-xl);
     }
 
-    .hero-content {
-      position: relative;
-      z-index: 1;
+    .hero-text {
+      max-width: 560px;
     }
 
-    .hero-avatar {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 2rem;
-      box-shadow:
-        0 0 60px rgba(154, 196, 148, 0.15),
-        0 0 120px rgba(154, 196, 148, 0.05);
-      border: 3px solid rgba(154, 196, 148, 0.2);
-    }
-
-    .hero h1 {
-      font-size: 3.5rem;
-      font-weight: 700;
+    .hero-text h1 {
+      font-family: var(--font-heading);
+      font-size: var(--text-5xl);
+      font-weight: 400;
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: var(--space-sm);
       letter-spacing: -0.02em;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
     }
 
-    .hero .tagline {
-      font-size: 1.4rem;
+    .hero-tagline {
+      font-family: var(--font-heading);
+      font-style: italic;
+      font-size: var(--text-3xl);
       color: var(--primary);
-      font-weight: 500;
-      margin-bottom: 1rem;
+      line-height: 1.25;
+      margin-bottom: var(--space-md);
     }
 
-    .hero .subtext {
-      font-size: 1.15rem;
-      color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto 2.5rem;
+    .hero-description {
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
       line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: var(--space-lg);
     }
 
-    .badge-wrapper {
+    .hero-badge {
       display: inline-block;
-      position: relative;
     }
 
-    .badge-wrapper a {
+    .hero-badge a {
       display: inline-block;
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out);
     }
 
-    .badge-wrapper a:hover {
+    .hero-badge a:hover {
       opacity: 0.85;
       transform: scale(1.03);
     }
 
-    .badge-wrapper img {
+    .hero-badge img {
       height: 48px;
     }
 
-    .badge-note {
+    .hero-badge-note {
       display: block;
-      font-size: 0.8rem;
+      font-size: var(--text-xs);
       color: var(--muted);
-      margin-top: 0.5rem;
-      opacity: 0.7;
+      margin-top: var(--space-xs);
     }
 
-    /* ── How It Works ──────────────────────────────── */
+    .hero-image {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-    .how-it-works {
+    .hero-image::before {
+      content: '';
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-image img {
+      position: relative;
+      width: 280px;
+      border-radius: 20px;
+    }
+
+    @keyframes gentle-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .hero-image-float {
+      animation: gentle-float 6s ease-in-out infinite;
+    }
+
+    /* ── Social Proof Strip ────────────────────────── */
+    .social-proof {
       background: var(--surface);
+      padding: var(--space-xl) 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
     }
 
-    .section-heading {
-      font-size: 2rem;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 3.5rem;
+    .social-proof-inner {
+      max-width: var(--max-width-narrow);
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    .social-proof-dash {
+      display: block;
+      width: 32px;
+      height: 2px;
+      background: var(--primary);
+      margin: 0 auto var(--space-md);
+      border-radius: 1px;
+    }
+
+    .social-proof blockquote {
+      font-family: var(--font-heading);
+      font-style: italic;
+      font-size: var(--text-2xl);
+      color: var(--primary);
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .social-proof-dash-bottom {
+      display: block;
+      width: 32px;
+      height: 2px;
+      background: var(--primary);
+      margin: var(--space-md) auto 0;
+      border-radius: 1px;
+    }
+
+    /* ── Section Heading ───────────────────────────── */
+    .section-label {
+      position: relative;
+      font-family: var(--font-heading);
+      font-size: var(--text-3xl);
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: var(--space-xl);
       letter-spacing: -0.01em;
     }
 
-    .steps-grid {
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 2px;
+      background: var(--primary);
+      margin-bottom: var(--space-sm);
+      border-radius: 1px;
+    }
+
+    /* ── How It Works ──────────────────────────────── */
+    .how-it-works {
+      padding: var(--space-3xl) 0;
+    }
+
+    .steps-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2.5rem;
-      margin-bottom: 3rem;
+      gap: var(--space-lg);
+      position: relative;
+    }
+
+    /* Connecting line behind the step numbers */
+    .steps-row::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        transparent,
+        rgba(154, 196, 148, 0.15) 20%,
+        rgba(154, 196, 148, 0.25) 50%,
+        rgba(154, 196, 148, 0.15) 80%,
+        transparent
+      );
     }
 
     .step {
       text-align: center;
-      padding: 1.5rem 1rem;
+      position: relative;
+    }
+
+    .step-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: var(--space-md);
     }
 
     .step-number {
-      display: inline-flex;
+      font-family: var(--font-heading);
+      font-size: var(--text-2xl);
+      color: var(--primary);
+      background: var(--bg);
+      width: 56px;
+      height: 56px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      width: 52px;
-      height: 52px;
       border-radius: 50%;
-      background: rgba(154, 196, 148, 0.12);
-      color: var(--primary);
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 1.25rem;
-      border: 2px solid rgba(154, 196, 148, 0.25);
+      border: 1px solid rgba(154, 196, 148, 0.2);
+      margin-bottom: var(--space-sm);
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-image {
+      width: 88px;
+      height: 88px;
+      object-fit: contain;
+      margin-bottom: var(--space-sm);
+      border-radius: 12px;
     }
 
     .step h3 {
-      font-size: 1.2rem;
+      font-family: var(--font-body);
+      font-size: var(--text-lg);
       font-weight: 600;
-      margin-bottom: 0.6rem;
+      color: var(--text);
+      margin-bottom: var(--space-xs);
     }
 
     .step p {
-      font-size: 1rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .how-image-wrapper {
-      text-align: center;
-    }
-
-    .how-image {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
       max-width: 280px;
-      border-radius: 16px;
-      opacity: 0.9;
+      margin: 0 auto;
     }
 
     /* ── Features ──────────────────────────────────── */
+    .features {
+      padding: var(--space-2xl) 0 var(--space-3xl);
+    }
 
-    .features-grid {
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .feature-item {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: 56px 1fr;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+      border-left: 2px solid rgba(154, 196, 148, 0.12);
+      transition: border-color 0.4s var(--ease-out), background 0.4s var(--ease-out);
+      border-radius: 0 12px 12px 0;
+      max-width: 640px;
     }
 
-    .feature-card {
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 2rem;
-      border: 1px solid rgba(155, 149, 139, 0.1);
-      transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    .feature-item:nth-child(even) {
+      margin-left: auto;
     }
 
-    .feature-card:hover {
-      border-color: rgba(154, 196, 148, 0.2);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    .feature-item:hover {
+      border-left-color: var(--primary);
+      background: rgba(26, 25, 24, 0.5);
     }
 
     .feature-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      display: block;
-    }
-
-    .feature-card h3 {
-      font-size: 1.15rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-card p {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── Trust ─────────────────────────────────────── */
-
-    .trust {
-      background: var(--surface);
-    }
-
-    .trust-content {
+      width: 48px;
+      height: 48px;
       display: flex;
       align-items: center;
-      gap: 4rem;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
-    .trust-text {
-      flex: 1;
+    .feature-icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--primary);
+      fill: none;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feature-item h3 {
+      font-family: var(--font-body);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+    }
+
+    .feature-item p {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* ── Trust / CTA ───────────────────────────────── */
+    .trust {
+      background: var(--surface);
+      padding: var(--space-3xl) 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: 0.55fr 1fr;
+      align-items: center;
+      gap: var(--space-xl);
+    }
+
+    .trust-image {
+      display: flex;
+      justify-content: center;
+    }
+
+    .trust-image img {
+      width: 300px;
+      border-radius: 20px;
     }
 
     .trust-text h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
+      font-family: var(--font-heading);
+      font-size: var(--text-4xl);
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: var(--space-md);
       letter-spacing: -0.01em;
     }
 
     .trust-highlight {
-      font-size: 1.2rem;
-      color: var(--primary);
+      font-size: var(--text-xl);
       font-weight: 600;
-      margin-bottom: 1rem;
+      color: var(--primary);
+      margin-bottom: var(--space-sm);
       line-height: 1.5;
     }
 
     .trust-text p {
-      font-size: 1.05rem;
-      color: var(--muted);
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
       line-height: 1.7;
       margin-bottom: 0.75rem;
     }
 
-    .trust-image {
-      flex-shrink: 0;
+    .trust-text p a {
+      color: var(--secondary);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.3s var(--ease-out);
     }
 
-    .trust-image img {
-      max-width: 240px;
-      border-radius: 16px;
-      opacity: 0.9;
+    .trust-text p a:hover {
+      color: var(--text);
+    }
+
+    .trust-badge {
+      display: inline-block;
+      margin-top: var(--space-md);
+    }
+
+    .trust-badge a {
+      display: inline-block;
+      transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+    }
+
+    .trust-badge a:hover {
+      opacity: 0.85;
+      transform: scale(1.03);
+    }
+
+    .trust-badge img {
+      height: 52px;
+    }
+
+    .trust-badge-note {
+      display: block;
+      font-size: var(--text-xs);
+      color: var(--muted);
+      margin-top: var(--space-xs);
     }
 
     /* ── Footer ────────────────────────────────────── */
-
     footer {
-      padding: 3rem 0;
-      border-top: 1px solid rgba(155, 149, 139, 0.12);
+      padding: var(--space-xl) 0;
+      border-top: 1px solid var(--border);
     }
 
-    .footer-content {
+    .footer-inner {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: var(--space-sm);
     }
 
-    .footer-links {
+    .footer-brand {
+      font-family: var(--font-heading);
+      font-size: var(--text-xl);
+      color: var(--text-secondary);
+    }
+
+    .footer-right {
       display: flex;
-      gap: 2rem;
       align-items: center;
+      gap: var(--space-lg);
     }
 
-    .footer-links a {
+    .footer-right a {
+      font-size: var(--text-sm);
       color: var(--muted);
-      text-decoration: none;
-      font-size: 0.95rem;
-      transition: color 0.2s ease;
+      transition: color 0.3s var(--ease-out);
     }
 
-    .footer-links a:hover {
+    .footer-right a:hover {
       color: var(--primary);
     }
 
     .footer-copy {
-      font-size: 0.85rem;
-      color: rgba(155, 149, 139, 0.6);
+      font-size: var(--text-xs);
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    /* ── Focus styles ──────────────────────────────── */
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 3px;
+      border-radius: 4px;
     }
 
     /* ── Responsive ────────────────────────────────── */
+    @media (max-width: 900px) {
+      :root {
+        --text-5xl: 3.5rem;
+        --text-4xl: 2.5rem;
+        --text-3xl: 2rem;
+        --text-2xl: 1.5rem;
+      }
+    }
 
     @media (max-width: 768px) {
+      :root {
+        --text-5xl: 3rem;
+        --text-4xl: 2.25rem;
+        --text-3xl: 1.75rem;
+      }
+
       .hero {
         min-height: auto;
-        padding: 4rem 0 3rem;
+        padding: calc(64px + var(--space-lg)) 0 var(--space-xl);
       }
 
-      .hero h1 {
-        font-size: 2.5rem;
-      }
-
-      .hero .tagline {
-        font-size: 1.2rem;
-      }
-
-      .hero .subtext {
-        font-size: 1.05rem;
-      }
-
-      .hero-avatar {
-        width: 140px;
-        height: 140px;
-      }
-
-      section {
-        padding: 3.5rem 0;
-      }
-
-      .section-heading {
-        font-size: 1.6rem;
-        margin-bottom: 2.5rem;
-      }
-
-      .steps-grid {
+      .hero-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-
-      .features-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .trust-content {
-        flex-direction: column;
         text-align: center;
-        gap: 2rem;
+        gap: var(--space-lg);
       }
 
-      .trust-text h2 {
-        font-size: 1.6rem;
+      .hero-image {
+        order: -1;
       }
 
-      .footer-content {
-        flex-direction: column;
+      .hero-image img {
+        width: 200px;
+      }
+
+      .hero-image::before {
+        width: 240px;
+        height: 240px;
+      }
+
+      .hero-text {
+        max-width: 100%;
+      }
+
+      .hero-description {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-badge {
+        display: block;
         text-align: center;
       }
 
-      .footer-links {
+      .hero-badge-note {
+        text-align: center;
+      }
+
+      /* Nav */
+      .nav-link-desktop {
+        display: none;
+      }
+
+      /* Steps */
+      .steps-row {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+      }
+
+      .steps-row::before {
+        display: none;
+      }
+
+      .section-label {
+        text-align: center;
+      }
+
+      .section-label::before {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* Features */
+      .feature-item,
+      .feature-item:nth-child(even) {
+        margin-left: 0;
+        max-width: 100%;
+      }
+
+      /* Trust */
+      .trust-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .trust-image {
+        order: -1;
+      }
+
+      .trust-image img {
+        width: 220px;
+      }
+
+      /* Footer */
+      .footer-inner {
         flex-direction: column;
-        gap: 0.75rem;
+        text-align: center;
+        gap: var(--space-sm);
+      }
+
+      .footer-right {
+        flex-direction: column;
+        gap: var(--space-xs);
       }
     }
 
     @media (max-width: 480px) {
-      .hero h1 {
-        font-size: 2rem;
-      }
-
-      .hero .subtext {
-        font-size: 1rem;
+      :root {
+        --text-5xl: 2.5rem;
+        --text-4xl: 2rem;
+        --text-3xl: 1.5rem;
       }
 
       .container {
-        padding: 0 1rem;
+        padding: 0 var(--space-sm);
       }
 
-      .feature-card {
-        padding: 1.5rem;
+      .hero-image img {
+        width: 160px;
+      }
+
+      .feature-item {
+        grid-template-columns: 44px 1fr;
+        padding: var(--space-md);
+      }
+
+      .social-proof blockquote {
+        font-size: var(--text-xl);
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- ── Hero ──────────────────────────────────────── -->
-  <section class="hero">
-    <div class="container hero-content">
-      <img
-        src="assets/frank-avatar.png"
-        alt="Frank, your personal tech helper"
-        class="hero-avatar"
-        width="180"
-        height="180"
-      >
-      <h1>Frank</h1>
-      <p class="tagline">Your Personal Tech Helper</p>
-      <p class="subtext">
-        Talk to Frank about any tech problem. He listens, remembers, and walks you through it step by step.
-      </p>
-      <div class="badge-wrapper">
-        <a href="#" aria-label="Download Frank on the App Store">
+  <!-- Grain filter (inline SVG) -->
+  <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+    </filter>
+  </svg>
+
+  <!-- ── Navigation ──────────────────────────────── -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="/" class="logo" aria-label="Frank - Home">
+        <img src="assets/frank-avatar.png" alt="" width="32" height="32" class="logo-avatar">
+        <span class="logo-text">Frank</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#how-it-works" class="nav-link-desktop">How it works</a>
+        <a href="#features" class="nav-link-desktop">Features</a>
+        <a href="#get-frank" class="nav-cta">Get the app</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Hero ────────────────────────────────────── -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-text" data-animate>
+          <h1>Frank</h1>
+          <p class="hero-tagline">Your Personal Tech Helper</p>
+          <p class="hero-description">
+            Talk to Frank about any tech problem. He listens patiently, remembers your devices, and walks you through it step by step.
+          </p>
+          <div class="hero-badge">
+            <a href="#" aria-label="Download Frank on the App Store">
+              <img
+                src="assets/badge-download-on-the-app-store.svg"
+                alt="Download on the App Store"
+              >
+            </a>
+            <span class="hero-badge-note">Coming soon</span>
+          </div>
+        </div>
+        <div class="hero-image" data-animate data-animate-delay="2">
           <img
-            src="assets/badge-download-on-the-app-store.svg"
-            alt="Download on the App Store"
+            src="assets/frank-reassuring.png"
+            alt="Frank welcoming you with open arms"
+            class="hero-image-float"
+            width="280"
           >
-        </a>
-        <span class="badge-note">Coming soon</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ── How It Works ──────────────────────────────── -->
-  <section class="how-it-works">
+  <!-- ── Social Proof ────────────────────────────── -->
+  <section class="social-proof" data-animate>
+    <div class="social-proof-inner">
+      <span class="social-proof-dash" aria-hidden="true"></span>
+      <blockquote>Like calling a friend who really knows technology</blockquote>
+      <span class="social-proof-dash-bottom" aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <!-- ── How It Works ────────────────────────────── -->
+  <section class="how-it-works" id="how-it-works">
     <div class="container">
-      <h2 class="section-heading">How It Works</h2>
-      <div class="steps-grid">
-        <div class="step">
-          <div class="step-number">1</div>
+      <h2 class="section-label" data-animate>How It Works</h2>
+      <div class="steps-row">
+        <div class="step" data-animate data-animate-delay="1">
+          <div class="step-header">
+            <div class="step-number">1</div>
+            <img
+              src="assets/frank-listening.png"
+              alt=""
+              class="step-image"
+              loading="lazy"
+            >
+          </div>
           <h3>Call Frank</h3>
           <p>Open the app and tap one button. Frank picks up right away.</p>
         </div>
-        <div class="step">
-          <div class="step-number">2</div>
+        <div class="step" data-animate data-animate-delay="2">
+          <div class="step-header">
+            <div class="step-number">2</div>
+            <img
+              src="assets/frank-thinking.png"
+              alt=""
+              class="step-image"
+              loading="lazy"
+            >
+          </div>
           <h3>Talk Naturally</h3>
           <p>Describe your problem in your own words. No menus, no typing needed.</p>
         </div>
-        <div class="step">
-          <div class="step-number">3</div>
+        <div class="step" data-animate data-animate-delay="3">
+          <div class="step-header">
+            <div class="step-number">3</div>
+            <img
+              src="assets/frank-helping.png"
+              alt=""
+              class="step-image"
+              loading="lazy"
+            >
+          </div>
           <h3>Get Help</h3>
           <p>Frank walks you through it with clear, patient, step-by-step guidance.</p>
         </div>
       </div>
-      <div class="how-image-wrapper">
-        <img
-          src="assets/frank-explaining.png"
-          alt="Frank explaining a solution step by step"
-          class="how-image"
-          loading="lazy"
-        >
+    </div>
+  </section>
+
+  <!-- ── Features ────────────────────────────────── -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2 class="section-label" data-animate>What Makes Frank Different</h2>
+      <div class="feature-list">
+
+        <div class="feature-item" data-animate data-animate-delay="1">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Voice Calls</h3>
+            <p>Just talk, no typing needed. Frank listens patiently and never rushes you. It feels like calling a friend who really knows technology.</p>
+          </div>
+        </div>
+
+        <div class="feature-item" data-animate data-animate-delay="2">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+              <path d="M9 14l2 2 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Call Summaries</h3>
+            <p>After every call, you get a written checklist of the steps Frank walked you through. Refer back to it anytime you need a refresher.</p>
+          </div>
+        </div>
+
+        <div class="feature-item" data-animate data-animate-delay="3">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <path d="M8 21h8"/>
+              <path d="M12 17v4"/>
+              <circle cx="12" cy="10" r="2"/>
+              <path d="M8.5 10a3.5 3.5 0 0 1 7 0"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Device Memory</h3>
+            <p>Frank remembers your devices and past issues. No need to explain your setup every time -- he already knows your printer and your Wi-Fi.</p>
+          </div>
+        </div>
+
+        <div class="feature-item" data-animate data-animate-delay="4">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <line x1="4" y1="21" x2="4" y2="14"/>
+              <line x1="4" y1="10" x2="4" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12" y2="3"/>
+              <line x1="20" y1="21" x2="20" y2="16"/>
+              <line x1="20" y1="12" x2="20" y2="3"/>
+              <line x1="1" y1="14" x2="7" y2="14"/>
+              <line x1="9" y1="8" x2="15" y2="8"/>
+              <line x1="17" y1="16" x2="23" y2="16"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Personalization</h3>
+            <p>Frank adapts to how you prefer to learn. Whether you want detailed explanations or quick steps, he adjusts to your comfort level.</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
 
-  <!-- ── Features ──────────────────────────────────── -->
-  <section class="features">
+  <!-- ── Trust / CTA ─────────────────────────────── -->
+  <section class="trust" id="get-frank">
     <div class="container">
-      <h2 class="section-heading">What Makes Frank Different</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <span class="feature-icon" aria-hidden="true">&#128222;</span>
-          <h3>Voice Calls</h3>
-          <p>Just talk, no typing needed. Frank listens patiently and never rushes you. It feels like calling a friend who really knows technology.</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon" aria-hidden="true">&#128203;</span>
-          <h3>Call Summaries</h3>
-          <p>After every call, you get a written checklist of the steps Frank walked you through. Refer back to it anytime you need a refresher.</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon" aria-hidden="true">&#129504;</span>
-          <h3>Device Memory</h3>
-          <p>Frank remembers your devices and past issues. No need to explain your setup every time -- he already knows your printer and your Wi-Fi.</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon" aria-hidden="true">&#9881;&#65039;</span>
-          <h3>Personalization</h3>
-          <p>Frank adapts to how you prefer to learn. Whether you want detailed explanations or quick steps, he adjusts to your comfort level.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Trust ─────────────────────────────────────── -->
-  <section class="trust">
-    <div class="container">
-      <div class="trust-content">
-        <div class="trust-text">
-          <h2>Try Frank for Free</h2>
-          <p class="trust-highlight">Start with 20 free minutes -- no credit card needed.</p>
-          <p>Your conversations stay private. See our <a href="privacy.html" style="color: var(--secondary); text-decoration: underline;">privacy policy</a> for how Frank protects your data.</p>
-          <p>When you need help with technology, Frank is always patient, always available, and always ready to help.</p>
-        </div>
-        <div class="trust-image">
+      <div class="trust-grid">
+        <div class="trust-image" data-animate>
           <img
             src="assets/frank-celebrating.png"
             alt="Frank celebrating after helping you solve a problem"
             loading="lazy"
           >
         </div>
+        <div class="trust-text" data-animate data-animate-delay="1">
+          <h2>Try Frank for Free</h2>
+          <p class="trust-highlight">Start with 20 free minutes -- no credit card needed.</p>
+          <p>Your conversations stay private. See our <a href="privacy.html">privacy policy</a> for how Frank protects your data.</p>
+          <p>When you need help with technology, Frank is always patient, always available, and always ready to help.</p>
+          <div class="trust-badge">
+            <a href="#" aria-label="Download Frank on the App Store">
+              <img
+                src="assets/badge-download-on-the-app-store.svg"
+                alt="Download on the App Store"
+              >
+            </a>
+            <span class="trust-badge-note">Coming soon</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ── Footer ────────────────────────────────────── -->
+  <!-- ── Footer ──────────────────────────────────── -->
   <footer>
-    <div class="container footer-content">
-      <div class="footer-links">
+    <div class="container footer-inner">
+      <span class="footer-brand">Frank</span>
+      <div class="footer-right">
         <a href="privacy.html">Privacy Policy</a>
         <a href="mailto:support@frank-app.net">support@frank-app.net</a>
+        <span class="footer-copy">&copy; 2026 Frank. All rights reserved.</span>
       </div>
-      <p class="footer-copy">&copy; 2026 Frank. All rights reserved.</p>
     </div>
   </footer>
+
+  <!-- ── Scripts ─────────────────────────────────── -->
+  <script>
+    // Scroll-triggered entrance animations
+    const animateEls = document.querySelectorAll('[data-animate]');
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      );
+
+      animateEls.forEach((el) => observer.observe(el));
+    } else {
+      // Fallback: show everything immediately
+      animateEls.forEach((el) => el.classList.add('is-visible'));
+    }
+
+    // Nav scroll state
+    const header = document.querySelector('.site-header');
+    const heroSection = document.getElementById('hero');
+
+    if (header && heroSection && 'IntersectionObserver' in window) {
+      const navObserver = new IntersectionObserver(
+        ([entry]) => {
+          header.classList.toggle('scrolled', !entry.isIntersecting);
+        },
+        { threshold: 0.1 }
+      );
+
+      navObserver.observe(heroSection);
+    }
+  </script>
 
 </body>
 </html>
