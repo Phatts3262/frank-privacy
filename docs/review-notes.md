@@ -25,8 +25,7 @@ sign-in. No promo code or special account is needed. To test the app:
 2. Complete the brief onboarding (enter a display name and accept the AI
    data processing disclosure)
 3. Tap the green "Call Frank" button on the home screen to start a voice call
-4. Speak naturally about any tech issue (e.g., "My WiFi keeps disconnecting"
-   or "How do I set up email on my new tablet")
+4. Speak naturally about any tech issue (e.g., “My WiFi keeps disconnecting” or “My printer still isn’t working from last week”)
 5. After ending the call, a written summary with step-by-step checklist appears
 6. Free minutes are granted automatically -- no purchase required to test
    core functionality
