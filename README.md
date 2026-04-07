@@ -6,6 +6,8 @@ Public website for the Frank app.
 
 - `index.html` -- Landing page (https://phatts3262.github.io/frank-privacy/)
 - `privacy.html` -- Privacy policy (https://phatts3262.github.io/frank-privacy/privacy.html)
+- `terms.html` -- Terms of service (https://phatts3262.github.io/frank-privacy/terms.html)
+- `legal.css` -- Shared dark brand stylesheet for privacy.html and terms.html
 - `assets/` -- Images and icons
 
 ## Updating
