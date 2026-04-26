@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Get Frank</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  var path = window.location.pathname;
+  var code = (path.match(/\/r\/([A-Z0-9]{6})$/i) || [])[1];
+  var url = code
+    ? 'https://apps.apple.com/app/fixit-frank/id6760689991?ct=ref_' + code.toUpperCase()
+    : 'https://apps.apple.com/app/fixit-frank/id6760689991';
+  window.location.replace(url);
+</script>
+</head><body><p>Redirecting... <a id="fallback" href="https://apps.apple.com/app/fixit-frank/id6760689991">tap here if not redirected</a>.</p></body></html>
